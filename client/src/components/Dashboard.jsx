@@ -7,6 +7,7 @@ const Dashboard = ({ user, socket, onLogout }) => {
   const [incomingCall, setIncomingCall] = useState(null);
   const [joinRoomId, setJoinRoomId] = useState('');
   const [activeTab, setActiveTab] = useState('Overview');
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -104,8 +105,25 @@ const Dashboard = ({ user, socket, onLogout }) => {
           </div>
         </div>
 
-        <div className="nav-item" onClick={onLogout} style={{ marginTop: 'auto', borderTop: '1px solid var(--glass-border)', paddingTop: '20px' }}>
-          <LogOut size={20} /> Logout
+        <div style={{ padding: '20px', marginTop: 'auto', borderTop: '1px solid var(--glass-border)' }}>
+          <button 
+            className="btn btn-danger" 
+            onClick={onLogout} 
+            style={{ 
+              width: '100%', 
+              padding: '12px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '10px',
+              fontSize: '1rem',
+              fontWeight: 600,
+              boxShadow: '0 4px 15px rgba(239, 68, 68, 0.4)',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <LogOut size={18} /> Sign Out
+          </button>
         </div>
       </div>
 
@@ -121,9 +139,43 @@ const Dashboard = ({ user, socket, onLogout }) => {
             </p>
           </div>
           
-          <div className="avatar" style={{ width: '80px', height: '80px', fontSize: '2rem' }}>
-            {user?.username ? user.username.substring(0, 1).toUpperCase() : 'U'}
-            <div className="status-dot"></div>
+          <div style={{ position: 'relative' }}>
+            <div 
+              className="avatar" 
+              style={{ width: '80px', height: '80px', fontSize: '2rem', cursor: 'pointer', transition: 'transform 0.3s ease' }}
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+              onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              {user?.username ? user.username.substring(0, 1).toUpperCase() : 'U'}
+              <div className="status-dot"></div>
+            </div>
+
+            {showProfileMenu && (
+              <div className="glass-panel fade-in" style={{ 
+                position: 'absolute', top: '100px', right: 0, padding: '20px', 
+                minWidth: '200px', textAlign: 'center', zIndex: 100,
+                boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+                border: '1px solid var(--primary)'
+              }}>
+                <h4 style={{ margin: '0 0 5px 0' }}>{user?.username}</h4>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '15px' }}>{user?.email || 'Premium Member'}</p>
+                <div className="divider" style={{ margin: '10px 0' }}></div>
+                <button 
+                  onClick={onLogout} 
+                  style={{ 
+                    background: 'transparent', border: 'none', color: 'var(--danger)', 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', 
+                    width: '100%', cursor: 'pointer', padding: '10px',
+                    fontWeight: 'bold', transition: '0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.1)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <LogOut size={16} /> Logout Securely
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

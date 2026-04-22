@@ -5,6 +5,7 @@ import './App.css';
 import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
 import Room from './components/Room';
+import Home from './components/Home';
 
 let globalSocket = null;
 
@@ -53,7 +54,7 @@ function App() {
           />
           <Route 
             path="/" 
-            element={<Navigate to={user ? "/dashboard" : "/login"} />} 
+            element={<Home user={user} />} 
           />
         </Routes>
       </BrowserRouter>

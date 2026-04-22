@@ -379,17 +379,6 @@
   overflow: hidden;
 }
 
-.auth-hero::before {
-  content: '';
-  position: absolute;
-  width: 150%;
-  height: 150%;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-  top: -25%;
-  left: -25%;
-  animation: pulseRotate 20s infinite linear;
-}
-
 .auth-form-container {
   flex: 1;
   display: flex;

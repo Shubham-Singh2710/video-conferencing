@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Video, Mail, Lock, User as UserIcon } from 'lucide-react';
+import { SparklesCore } from './ui/Sparkles';
 
 const Auth = ({ setAuthUser }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -39,13 +40,39 @@ const Auth = ({ setAuthUser }) => {
   return (
     <div className="split-layout fade-in">
       {/* Left Branding Side */}
-      <div className="auth-hero">
-        <div style={{ zIndex: 1, textAlign: 'center' }}>
-          <div className="btn-icon" style={{ background: 'var(--bg-dark)', width: '80px', height: '80px', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Video size={40} color="var(--primary)" />
+      <div className="auth-hero relative" style={{ backgroundColor: '#000', backgroundImage: 'none' }}>
+        
+        {/* Core component */}
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+          <SparklesCore
+            background="transparent"
+            minSize={0.4}
+            maxSize={1.5}
+            particleDensity={100}
+            className="w-full h-full"
+            particleColor="#FFFFFF"
+          />
+          {/* Radial Gradient to prevent sharp edges */}
+          <div style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', background: 'black', maskImage: 'radial-gradient(350px 200px at top, transparent 20%, white)', WebkitMaskImage: 'radial-gradient(400px 300px at center, transparent 30%, black)' }}></div>
+        </div>
+
+        <div style={{ zIndex: 2, textAlign: 'center', position: 'relative' }}>
+          <div className="btn-icon" style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', width: '80px', height: '80px', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Video size={40} color="#fff" />
           </div>
-          <h1 style={{ fontSize: '3.5rem', fontWeight: 800, marginBottom: '15px' }}>MeetSync</h1>
-          <p style={{ fontSize: '1.2rem', opacity: 0.8, maxWidth: '400px', margin: '0 auto' }}>
+          
+          <h1 style={{ fontSize: '4.5rem', fontWeight: 800, margin: '0 0 15px 0', letterSpacing: '-0.02em', background: 'linear-gradient(to bottom, #ffffff, #a3a3a3)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            MeetSync
+          </h1>
+          
+          <div style={{ position: 'relative', width: '300px', height: '2px', margin: '0 auto 20px' }}>
+            <div style={{ position: 'absolute', left: '10%', top: 0, background: 'linear-gradient(to right, transparent, #4f46e5, transparent)', height: '2px', width: '80%', filter: 'blur(2px)' }} />
+            <div style={{ position: 'absolute', left: '10%', top: 0, background: 'linear-gradient(to right, transparent, #4f46e5, transparent)', height: '1px', width: '80%' }} />
+            <div style={{ position: 'absolute', left: '30%', top: 0, background: 'linear-gradient(to right, transparent, #0ea5e9, transparent)', height: '4px', width: '40%', filter: 'blur(3px)' }} />
+            <div style={{ position: 'absolute', left: '30%', top: 0, background: 'linear-gradient(to right, transparent, #0ea5e9, transparent)', height: '1px', width: '40%' }} />
+          </div>
+
+          <p style={{ fontSize: '1.2rem', color: '#a3a3a3', maxWidth: '400px', margin: '0 auto' }}>
             Experience next-generation high definition video meetings designed for modern teams.
           </p>
         </div>
