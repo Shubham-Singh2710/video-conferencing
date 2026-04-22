@@ -6,6 +6,7 @@ import { SparklesCore } from './ui/Sparkles';
 
 const Auth = ({ setAuthUser }) => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,6 +19,16 @@ const Auth = ({ setAuthUser }) => {
     setError('');
     
     try {
+      if (isForgotPassword) {
+        const res = await axios.post('http://localhost:3001/api/auth/reset-password', { email, newPassword: password });
+        setError(res.data.message || 'Password reset safely.');
+        setTimeout(() => {
+          setIsForgotPassword(false);
+          setError('');
+        }, 3000);
+        return;
+      }
+
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
       const payload = isLogin ? { email, password } : { username, email, password };
       
@@ -81,15 +92,19 @@ const Auth = ({ setAuthUser }) => {
       {/* Right Form Side */}
       <div className="auth-form-container">
         <div className="auth-box glass-panel">
-          <h2 style={{ fontSize: '2rem', marginBottom: '10px' }}>{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
+          <h2 style={{ fontSize: '2rem', marginBottom: '10px' }}>
+            {isForgotPassword ? 'Reset Password' : isLogin ? 'Welcome Back' : 'Create Account'}
+          </h2>
           <p style={{ color: 'var(--text-muted)', marginBottom: '30px' }}>
-            {isLogin ? 'Sign in to access your dashboard.' : 'Start your journey with us.'}
+            {isForgotPassword 
+              ? 'Enter your email and a new password.' 
+              : isLogin ? 'Sign in to access your dashboard.' : 'Start your journey with us.'}
           </p>
           
           {error && <div style={{ color: 'var(--danger)', marginBottom: '20px', padding: '10px', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.3)' }}>{error}</div>}
 
           <form onSubmit={handleSubmit}>
-            {!isLogin && (
+            {!isLogin && !isForgotPassword && (
               <div className="input-group">
                 <label className="input-label">Username</label>
                 <div style={{ position: 'relative' }}>
@@ -122,12 +137,24 @@ const Auth = ({ setAuthUser }) => {
             </div>
             
             <div className="input-group">
-              <label className="input-label">Password</label>
-              <div style={{ position: 'relative' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label className="input-label" style={{ margin: 0 }}>
+                  {isForgotPassword ? 'New Password' : 'Password'}
+                </label>
+                {isLogin && !isForgotPassword && (
+                  <span 
+                    style={{ color: 'var(--primary)', fontSize: '0.85rem', cursor: 'pointer' }}
+                    onClick={() => { setIsForgotPassword(true); setError(''); }}
+                  >
+                    Forgot Password?
+                  </span>
+                )}
+              </div>
+              <div style={{ position: 'relative', marginTop: '8px' }}>
                 <Lock size={18} style={{ position: 'absolute', left: '15px', top: '15px', color: 'var(--text-muted)' }} />
                 <input 
                   type="password" 
-                  placeholder="Enter password" 
+                  placeholder={isForgotPassword ? "Enter new password" : "Enter password"} 
                   value={password} 
                   onChange={(e) => setPassword(e.target.value)} 
                   required
@@ -137,7 +164,7 @@ const Auth = ({ setAuthUser }) => {
             </div>
             
             <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '20px', padding: '15px' }}>
-              {isLogin ? 'Login' : 'Sign Up'}
+              {isForgotPassword ? 'Reset Password' : isLogin ? 'Login' : 'Sign Up'}
             </button>
           </form>
 
@@ -146,9 +173,16 @@ const Auth = ({ setAuthUser }) => {
           <button 
             className="btn glass-panel" 
             style={{ width: '100%', background: 'transparent' }}
-            onClick={() => { setIsLogin(!isLogin); setError(''); }}
+            onClick={() => { 
+                if (isForgotPassword) {
+                    setIsForgotPassword(false);
+                } else {
+                    setIsLogin(!isLogin); 
+                }
+                setError(''); 
+            }}
           >
-            {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Login'}
+            {isForgotPassword ? 'Back to Login' : isLogin ? 'Need an account? Sign Up' : 'Already have an account? Login'}
           </button>
         </div>
       </div>

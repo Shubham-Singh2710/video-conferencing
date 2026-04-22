@@ -4,6 +4,27 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_key_12345';
 
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: 'User with this email not found' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'Password has been reset successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error during password reset' });
+  }
+};
+
 exports.register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
